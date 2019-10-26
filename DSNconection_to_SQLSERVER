@@ -1,0 +1,26 @@
+' Funcion para conexion DSN desde access a una tabla de SQLSERVER
+
+Function CreateDSNConnection(stServer As String, stDatabase As String, Optional stUsername As String, Optional stPassword As String) As Boolean
+    On Error GoTo CreateDSNConnection_Err
+
+    Dim stConnect As String
+    
+    If Len(stUsername) = 0 Then
+        '//Use trusted authentication if stUsername is not supplied.
+        stConnect = "Description=myDSN" & vbCr & "SERVER=" & stServer & vbCr & "DATABASE=" & stDatabase & vbCr & "Trusted_Connection=Yes"
+    Else
+        stConnect = "Description=myDSN" & vbCr & "SERVER=" & stServer & vbCr & "DATABASE=" & stDatabase & vbCr
+    End If
+    
+    DBEngine.RegisterDatabase "myDSN", "SQL Server", True, stConnect
+        
+    '// Add error checking.
+    CreateDSNConnection = True
+    Exit Function
+    CreateDSNConnection_Err:
+    
+    CreateDSNConnection = False
+    MsgBox "CreateDSNConnection encountered an unexpected error: " & Err.Description
+    
+End Function
+
